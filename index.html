@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Anonymous Message</title>
+
+<style>
+
+body{
+background:#ffe54c;
+font-family:Comic Sans MS, cursive;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.box{
+background:white;
+border:4px solid black;
+border-radius:15px;
+width:330px;
+padding:20px;
+box-shadow:6px 6px 0px black;
+text-align:center;
+}
+
+h2{
+margin-top:0;
+}
+
+textarea{
+width:100%;
+height:120px;
+border:3px solid black;
+border-radius:10px;
+padding:10px;
+font-family:Comic Sans MS;
+resize:none;
+}
+
+button{
+margin-top:10px;
+width:100%;
+padding:10px;
+border:3px solid black;
+border-radius:10px;
+background:#00ff9d;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+background:#00d47f;
+}
+
+#status{
+margin-top:10px;
+font-size:14px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>💬 Kirim Pesan Anonim</h2>
+
+<textarea id="pesan" placeholder="tulis pesan rahasia..."></textarea>
+
+<button onclick="kirim()">Kirim Pesan</button>
+
+<div id="status"></div>
+
+</div>
+
+<script>
+
+function kirim(){
+
+let pesan=document.getElementById("pesan").value;
+
+if(pesan==""){
+document.getElementById("status").innerText="isi pesan dulu";
+return;
+}
+
+let last=localStorage.getItem("lastSend");
+
+if(last && Date.now()-last < 30000){
+
+let sisa=Math.ceil((30000-(Date.now()-last))/1000);
+
+document.getElementById("status").innerText="tunggu "+sisa+" detik";
+return;
+
+}
+
+let token="8651797994:AAHUzQQ4jdy93XzbZiD710jj4ilg5Xyzbkw";
+let chat_id="8444201655";
+
+let text="📩 Pesan Anonymous\n\n"+pesan;
+
+fetch("https://api.telegram.org/bot"+token+"/sendMessage",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+chat_id:chat_id,
+text:text
+})
+
+});
+
+localStorage.setItem("lastSend",Date.now());
+
+document.getElementById("status").innerText="pesan terkirim";
+
+document.getElementById("pesan").value="";
+
+}
+
+</script>
+
+</body>
+</html>
